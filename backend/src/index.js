@@ -11,6 +11,8 @@ const app = express()
 
 const PORT = process.env.PORT
 
+app.use(express.json())
+
 // 登录凭证路由挂载
 app.use('/api/auth', authRoutes)
 
