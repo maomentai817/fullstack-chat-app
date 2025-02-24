@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { connectDB } from './lib/db.js'
 
 import authRoutes from './routes/auth.route.js'
+import messageRoutes from './routes/message.route.js'
 
 // dotenv 包读取 .env 文件的环境变量
 dotenv.config()
@@ -17,6 +18,8 @@ app.use(cookieParser())
 
 // 登录凭证路由挂载
 app.use('/api/auth', authRoutes)
+// 消息路由挂载
+app.use('/api/message', messageRoutes)
 
 app.listen(PORT, () => { 
   console.log(`server is running on port ${PORT}`)
