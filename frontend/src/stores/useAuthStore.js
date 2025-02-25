@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import toast from 'react-hot-toast'
 import { instance } from '../lib/instance'
 
 export const useAuthStore = create((set) => ({
@@ -24,4 +25,17 @@ export const useAuthStore = create((set) => ({
       set({ isCheckingAuth: false })
     }
   },
+  // 注册
+  signUp: async (data) => { 
+    set({ isSigningUp: true })
+    try {
+      const res = await instance.post('/auth/signup', data)
+      set({ authUser: res.data })
+      toast.success('注册成功')
+    } catch (error) {
+      toast.error(error.response.data.message)
+    } finally {
+      set({ isSigningUp: false })
+    }
+  }
 }))
