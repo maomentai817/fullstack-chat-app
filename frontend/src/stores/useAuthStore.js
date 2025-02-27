@@ -37,5 +37,28 @@ export const useAuthStore = create((set) => ({
     } finally {
       set({ isSigningUp: false })
     }
+  },
+  // 登出
+  logout: async () => { 
+    try {
+      await instance.post('/auth/logout')
+      set({ authUser: null })
+      toast.success('登出成功')
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  },
+  // 登录
+  login: async (data) => { 
+    set({ isLoggingIn: true })
+    try {
+      const res = await instance.post('/auth/login', data)
+      set({ authUser: res.data })
+      toast.success('登录成功')
+    } catch (error) {
+      toast.error(error.response.data.message)
+    } finally { 
+      set({ isLoggingIn: false })
+    }
   }
 }))
