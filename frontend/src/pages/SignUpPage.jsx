@@ -1,4 +1,5 @@
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { useAuthStore } from "../stores/useAuthStore"
 import { MessageSquare, User, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Link } from "react-router-dom"
@@ -17,10 +18,17 @@ const SignUpPage = () => {
   const { signUp, isSigningUp } = useAuthStore()
 
   // 表单验证
-  const validateForm = () => { }
+  const validateForm = () => {
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.password.trim()) return toast.error('请填写完整信息')
+    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error('无效的邮箱格式')
+    if (formData.password.length < 6) return toast.error('密码长度至少为6位')
+    
+    return true
+  }
   
   const handleSubmit = (e) => { 
     e.preventDefault()
+    validateForm() && signUp(formData)
   }
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
