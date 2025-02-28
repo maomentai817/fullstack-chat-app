@@ -60,5 +60,18 @@ export const useAuthStore = create((set) => ({
     } finally { 
       set({ isLoggingIn: false })
     }
-  }
+  },
+  // 修改头像
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true })
+    try {
+      const res = await instance.put('/auth/update-profile', data)
+      set({ authUser: res.data })
+      toast.success('修改成功')
+    } catch (error) {
+      toast.error(error.response.data.message)
+    } finally { 
+      set({ isUpdatingProfile: false })
+    }
+  },
 }))
