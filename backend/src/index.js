@@ -7,10 +7,10 @@ import { connectDB } from './lib/db.js'
 
 import authRoutes from './routes/auth.route.js'
 import messageRoutes from './routes/message.route.js'
+import { app, server } from './lib/socket.js'
 
 // dotenv 包读取 .env 文件的环境变量
 dotenv.config()
-const app = express()
 
 const PORT = process.env.PORT
 
@@ -27,7 +27,7 @@ app.use('/api/auth', authRoutes)
 // 消息路由挂载
 app.use('/api/message', messageRoutes)
 
-app.listen(PORT, () => { 
+server.listen(PORT, () => { 
   console.log(`server is running on port ${PORT}`)
   connectDB()
 })
