@@ -6,13 +6,22 @@ import MessageSkeleton from './skeletons/MessageSkeleton'
 import { useAuthStore } from '../stores/useAuthStore'
 import { formatMessageTime } from "../lib/utils"
 const ChatContainer = () => {
-  const { messages, selectedUser, getMessages, isMessagesLoading } = useChatStore()
+  const { messages, selectedUser, getMessages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessage } = useChatStore()
   const { authUser } = useAuthStore()
   const messageEndRef = useRef(null)
 
   useEffect(() => {
     getMessages(selectedUser._id)
-  }, [selectedUser._id, getMessages])
+
+    subscribeToMessages()
+    return () => unsubscribeFromMessage()
+  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessage])
+
+  // 视口滚动到底部
+  useEffect(() => { 
+    if (messageEndRef.current && messages)
+      messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   if (isMessagesLoading) return (
     <div className="flex flex-1 flex-col overflow-auto">
