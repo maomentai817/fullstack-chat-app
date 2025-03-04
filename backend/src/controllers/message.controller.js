@@ -1,6 +1,7 @@
 import User from "../models/user.model.js"
 import Message from "../models/message.model.js"
 import cloudinary from "../lib/cloudinary.js"
+import { getSocketIdByUserId, io } from "../lib/socket.js"
 
 export const getUsersForSiderbar = async (req, res) => {
   try {
@@ -60,6 +61,11 @@ export const sendMessage = async (req, res) => {
     await newMessage.save()
 
     //! todo - realtime functionality goes here => socket.io
+    const receiverSocketId = getSocketIdByUserId(receiverId)
+    // 接收方在线, 实时通知
+    if (receiverSocketId) { 
+      io.to(receiverSocketId).emit('newMessage', newMessage)
+    }
 
     // 资源已创建
     res.status(201).json(newMessage)
