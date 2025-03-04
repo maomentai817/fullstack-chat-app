@@ -12,7 +12,7 @@ import ProfilePage from './pages/ProfilePage'
 import { useAuthStore } from './stores/useAuthStore'
 import { useThemeStore } from './stores/useThemeStore'
 const App = () => { 
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore()
   const { theme } = useThemeStore()
 
   useEffect(() => {

@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 import toast from 'react-hot-toast'
 import { instance } from '../lib/instance'
+import { io } from 'socket.io-client'
+import { BASE_URL } from '../lib/instance'
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   // state
   authUser: null,
   isSigningUp: false,
@@ -18,6 +20,8 @@ export const useAuthStore = create((set) => ({
       const res = await instance.get('/auth/check') 
 
       set({ authUser: res.data })
+
+      get().connectSocket()
     } catch (error) {
       console.log(`Error in checkAuth: ${error}`);
       set({ authUser: null })
@@ -44,6 +48,8 @@ export const useAuthStore = create((set) => ({
       await instance.post('/auth/logout')
       set({ authUser: null })
       toast.success('登出成功')
+
+      get().disconnectSocket()
     } catch (error) {
       toast.error(error.response.data.message)
     }
@@ -55,6 +61,8 @@ export const useAuthStore = create((set) => ({
       const res = await instance.post('/auth/login', data)
       set({ authUser: res.data })
       toast.success('登录成功')
+
+      get().connectSocket()
     } catch (error) {
       toast.error(error.response.data.message)
     } finally { 
@@ -73,5 +81,27 @@ export const useAuthStore = create((set) => ({
     } finally { 
       set({ isUpdatingProfile: false })
     }
+  },
+  // 连接socket
+  connectSocket: () => {
+    const { authUser } = get()
+    if (!authUser || get().socket?.connected)  return
+
+    const socket = io(BASE_URL, {
+      query: {
+        userId: authUser._id,
+      }
+    })
+    socket.connect()
+
+    set({ socket })
+    // 监听在线用户列表
+    socket.on('getOnlineUsers', (userIds) => {
+      set({ onlineUsers: userIds })
+    })
+  },
+  // 断开socket
+  disconnectSocket: () => {
+    if (get().socket?.connected)  get().socket.disconnect()
   },
 }))
