@@ -1,0 +1,13 @@
+{
+  "name": "fullstack-chat-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm install -C backend && pnpm install -C frontend && pnpm -C frontend run build",
+    "start": "pnpm -C backend run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
